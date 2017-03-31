@@ -4,20 +4,90 @@ sudo docker run -d -p 4444:4444 selenium/standalone-chrome:3.2.0-actinium
 sudo docker run -d -p 4444:4444 -p 5900:5900 selenium/standalone-chrome-debug:3.2.0-actinium
 */
 require_once('vendor/autoload.php');
+require "./aws.inc.php";
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
+use Aws\Sqs\SqsClient;
+use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Marshaler;
 
-$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'chrome');
-$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
-$webDriver->get("https://www.amazon.co.jp/任天堂-Nintendo-Switch-Joy-Con-グレー/dp/B01N5QLLT3/ref=s9_ri_gw_g63_i1_r?pf_rd_m=AN1VRQENFRJN5&pf_rd_s=&pf_rd_r=EE7PJVZHDGBY29G8EM1H&pf_rd_t=36701&pf_rd_p=9c50a930-f257-4558-a46f-d3236140b37a&pf_rd_i=desktop");
+$q = SqsClient::factory(array(
+    'credentials' => array(
+        'key'    => J_ASSESS_KEY,
+        'secret' => J_SECRET_KEY,
+    ),
+    'region' => 'ap-northeast-1'
+));
 
-$data = array();
-$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
-$data["title"] = $element->getText();
-$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
-$data["photo"] = $element->getAttribute("src");
-$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
-$data["price"] = $element->getText();
+$db = DynamoDbClient::factory(array(
+    'credentials' => array(
+        'key'    => J_ASSESS_KEY,
+        'secret' => J_SECRET_KEY,
+    ),
+    'region' => 'ap-northeast-1'
+));
 
-print_r($data);
+$qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs";
+$result = $q->receiveMessage(array(
+    "QueueUrl" => $qurl
+));
+
+$messages = $result["Messages"];
+if ( count($messages) > 0 ) {
+	$m = $messages[0];
+	$mid = $m['MessageId'];
+	$json = $m['Body'];
+	$receipt = $m['ReceiptHandle'];
+
+	$data = json_decode($json, true);
+	if ( !$data ) {
+		echo "Invalied json\n";
+	}else {
+		$fetched = fetchAmazonUrl($data['url']);
+		$updated = array_merge($fetched, $data);
+		$updated["title"] = $fetched['title'];
+		putItem($updated);
+	}
+	//$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
+}else {
+	echo "No message.\n";
+}
+
+function putItem($item) {
+	global $db, $q;
+
+    $r = $q->sendMessage(array(
+        "QueueUrl" => "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs",
+        "MessageBody" => json_encode($item)
+    ));
+    $msid = $r['MessageId'];
+    //TODO log & error handling
+
+	$marshaler = new Marshaler();
+    $data = $marshaler->marshalItem($item);
+	$result = $db->putItem(array(
+	    'TableName' => 'products_amazon',
+	    'Item' => $data
+	));
+    //Error handling
+
+    return $result;
+}
+
+function fetchAmazonUrl($url) {
+
+	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
+	$webDriver->get($url);
+	$data = array();
+	$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
+	$data["title"] = $element->getText();
+	$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
+	$data["photo"] = $element->getAttribute("src");
+	$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
+	$data["price"] = $element->getText();
+
+	return $data;
+}
+
