@@ -29,40 +29,43 @@ $db = DynamoDbClient::factory(array(
 ));
 
 $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs";
-$result = $q->receiveMessage(array(
-    "QueueUrl" => $qurl
-));
+while ( true ) {
+	mainLoop();
+	sleep(5);
+}
 
-$messages = $result["Messages"];
-if ( count($messages) > 0 ) {
-	$m = $messages[0];
-	$mid = $m['MessageId'];
-	$json = $m['Body'];
-	$receipt = $m['ReceiptHandle'];
+function mainLoop() {
+	global $q, $db, $qurl;
 
-	$data = json_decode($json, true);
-	if ( !$data ) {
-		echo "Invalied json\n";
+	$result = $q->receiveMessage(array(
+	    "QueueUrl" => $qurl
+	));
+
+	$messages = $result["Messages"];
+	if ( count($messages) > 0 ) {
+		$m = $messages[0];
+		$mid = $m['MessageId'];
+		echo "Get message:".$mid."\n";	//TODO Log
+		$json = $m['Body'];
+		$receipt = $m['ReceiptHandle'];
+
+		$data = json_decode($json, true);
+		if ( !$data ) {
+			echo "Invalied json\n";
+		}else {
+			$fetched = fetchAmazonUrl($data['url']);
+			$updated = array_merge($fetched, $data);
+			$updated["title"] = $fetched['title'];
+			putItem($updated);
+		}
+		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
-		$fetched = fetchAmazonUrl($data['url']);
-		$updated = array_merge($fetched, $data);
-		$updated["title"] = $fetched['title'];
-		putItem($updated);
+		echo "No message.\n";
 	}
-	//$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
-}else {
-	echo "No message.\n";
 }
 
 function putItem($item) {
 	global $db, $q;
-
-    $r = $q->sendMessage(array(
-        "QueueUrl" => "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs",
-        "MessageBody" => json_encode($item)
-    ));
-    $msid = $r['MessageId'];
-    //TODO log & error handling
 
 	$marshaler = new Marshaler();
     $data = $marshaler->marshalItem($item);
@@ -81,12 +84,20 @@ function fetchAmazonUrl($url) {
 	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
 	$webDriver->get($url);
 	$data = array();
-	$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
-	$data["title"] = $element->getText();
-	$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
-	$data["photo"] = $element->getAttribute("src");
-	$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
-	$data["price"] = $element->getText();
+	try {
+		$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
+		$data["title"] = $element->getText();
+		$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
+		$data["photo"] = $element->getAttribute("src");
+		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
+		$data["price"] = $element->getText();
+	} catch(Exception $e) {
+		print_r($e);
+		//TODO send alert mail.
+	} finally {
+		$webDriver->quit();
+	}
+	
 
 	return $data;
 }
