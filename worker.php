@@ -60,7 +60,7 @@ function mainLoop() {
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
-		echo "No message.\n";
+		//echo "No message.\n";
 	}
 }
 
