@@ -14,6 +14,11 @@ use Aws\DynamoDb\Marshaler;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+//
+// $d = date("Ymd-His");
+// rename("./debug.log", "./debug_{$d}.log");
+//TODO Docker restart
+
 $log = new Logger('info');
 $log->pushHandler(new StreamHandler('./debug.log', Logger::DEBUG));
 
@@ -51,6 +56,7 @@ function mainLoop() {
 	if ( count($messages) > 0 ) {
 		$m = $messages[0];
 		$mid = $m['MessageId'];
+		echo "Get message:".$mid."\n";
 		$log->debug("Get message:".$mid);
 		$json = $m['Body'];
 		$receipt = $m['ReceiptHandle'];
@@ -62,8 +68,14 @@ function mainLoop() {
 			$url = $data['url'];
 			$log->debug("Get:".$url);
 			$fetched = fetchAmazonUrl($url);
+			print_r($fetched);
+			if (!array_key_exists("title", $fetched)) {
+				echo "fetch price failed. may try it again later.\n";
+				return;
+			}
 			$updated = array_merge($fetched, $data);
-			$updated["title"] = $fetched['title'];
+			$updated["highest"] = $fetched["price"];
+			$updated["lowest"] = $fetched["price"];
 			putItem($updated);
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
@@ -81,6 +93,18 @@ function putItem($item) {
 	    'TableName' => 'products_amazon',
 	    'Item' => $data
 	));
+
+	$price["date"] = date("Ymd");
+	$price["asin"] = $item["asin"];
+	//EUR 29.99
+	$price["price"] = $item["price"];
+	$price["currency"] = $item["currency"];
+	$p_data = $marshaler->marshalItem($price);
+	$result = $db->putItem(array(
+	    'TableName' => 'prices_amazon',
+	    'Item' => $p_data
+	));
+
     //Error handling
 	//$log->debug("put item");
     return $result;
@@ -88,28 +112,56 @@ function putItem($item) {
 
 function fetchAmazonUrl($url) {
 	global $log;
-	
+	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
+
+	$data = array();
+	//default price
+	$data["price"] = '0';
+	$data["currency"] = ' ';
+
 	try {
-		$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-		$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
+		echo "fetching...";
+		
 		$webDriver->get($url);
-		$data = array();
 		$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
 		$data["title"] = $element->getText();
 		$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
 		$data["photo"] = $element->getAttribute("src");
-		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
-		$data["price"] = $element->getText();
-		$log->debug("clean webdriver.");
-		$webDriver->quit();
 
 	} catch(Exception $e) {
 		$log->debug(print_r($e, true));
+		print_r($e);
 		//TODO send alert mail.
 	} finally {
-		
+		//
 	}
+
+	try {
+		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
+		if ($element->isDisplayed()) {
+    		$price = $element->getText();
+			if ($price != "") {
+				preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
+				$data["price"] = str_replace(",", "", $match[2]);
+				$data["currency"] = $match[1];
+			}
+		}
+	} catch(Exception $e) {
+		$log->debug("find element price failed.");
+		//print_r($e);
+		//TODO send alert mail.
+	} finally {
+		//
+	}
+
+	echo "close window\n";
+	$webDriver->close();
+	$webDriver->quit();
 	
+	echo "fetched:\n";
+	print_r($data);
+	$log->debug("fetched price:".print_r($data, true));
 	return $data;
 }
 
