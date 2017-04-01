@@ -4,7 +4,7 @@ sudo docker run -d -p 4444:4444 selenium/standalone-chrome:3.2.0-actinium
 sudo docker run -d -p 4444:4444 -p 5900:5900 selenium/standalone-chrome-debug:3.2.0-actinium
 */
 require_once('vendor/autoload.php');
-require "./aws.inc.php";
+require "../pr/aws.inc.php";
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
