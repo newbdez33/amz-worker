@@ -16,3 +16,4 @@ DerivedData
 *.xcuserstate
 .DS_Store
 /aws.inc.php
+/debug.log

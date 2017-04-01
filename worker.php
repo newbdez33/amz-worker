@@ -11,6 +11,11 @@ use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Aws\Sqs\SqsClient;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$log = new Logger('info');
+$log->pushHandler(new StreamHandler('./debug.log', Logger::DEBUG));
 
 $q = SqsClient::factory(array(
     'credentials' => array(
@@ -30,12 +35,13 @@ $db = DynamoDbClient::factory(array(
 
 $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs";
 while ( true ) {
+	$log->debug("start mainloop");
 	mainLoop();
 	sleep(5);
 }
 
 function mainLoop() {
-	global $q, $db, $qurl;
+	global $q, $db, $qurl, $log;
 
 	$result = $q->receiveMessage(array(
 	    "QueueUrl" => $qurl
@@ -45,13 +51,13 @@ function mainLoop() {
 	if ( count($messages) > 0 ) {
 		$m = $messages[0];
 		$mid = $m['MessageId'];
-		echo "Get message:".$mid."\n";	//TODO Log
+		$log->debug("Get message:".$mid);
 		$json = $m['Body'];
 		$receipt = $m['ReceiptHandle'];
 
 		$data = json_decode($json, true);
 		if ( !$data ) {
-			echo "Invalied json\n";
+			$log->debug("Invalied json");
 		}else {
 			$fetched = fetchAmazonUrl($data['url']);
 			$updated = array_merge($fetched, $data);
@@ -60,12 +66,12 @@ function mainLoop() {
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
-		//echo "No message.\n";
+		$log->debug("No message.");
 	}
 }
 
 function putItem($item) {
-	global $db, $q;
+	global $db, $q, $log;
 
 	$marshaler = new Marshaler();
     $data = $marshaler->marshalItem($item);
@@ -74,12 +80,12 @@ function putItem($item) {
 	    'Item' => $data
 	));
     //Error handling
-
+	//$log->debug("put item");
     return $result;
 }
 
 function fetchAmazonUrl($url) {
-
+	global $log;
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
 	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
 	$webDriver->get($url);
@@ -92,9 +98,10 @@ function fetchAmazonUrl($url) {
 		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
 		$data["price"] = $element->getText();
 	} catch(Exception $e) {
-		print_r($e);
+		$log->debug(print_r($e, true));
 		//TODO send alert mail.
 	} finally {
+		$log->debug("clean webdriver.");
 		$webDriver->quit();
 	}
 	
