@@ -35,7 +35,7 @@ $db = DynamoDbClient::factory(array(
 
 $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs";
 while ( true ) {
-	$log->debug("start mainloop");
+	//$log->debug("start mainloop");
 	mainLoop();
 	sleep(5);
 }
@@ -59,14 +59,16 @@ function mainLoop() {
 		if ( !$data ) {
 			$log->debug("Invalied json");
 		}else {
-			$fetched = fetchAmazonUrl($data['url']);
+			$url = $data['url'];
+			$log->debug("Get:".$url);
+			$fetched = fetchAmazonUrl($url);
 			$updated = array_merge($fetched, $data);
 			$updated["title"] = $fetched['title'];
 			putItem($updated);
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
-		$log->debug("No message.");
+		//$log->debug("No message.");
 	}
 }
 
@@ -86,26 +88,28 @@ function putItem($item) {
 
 function fetchAmazonUrl($url) {
 	global $log;
-	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
-	$webDriver->get($url);
-	$data = array();
+	
 	try {
+		$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+		$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);	
+		$webDriver->get($url);
+		$data = array();
 		$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
 		$data["title"] = $element->getText();
 		$element = $webDriver->findElement(WebDriverBy::id("landingImage"));
 		$data["photo"] = $element->getAttribute("src");
 		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
 		$data["price"] = $element->getText();
+		$log->debug("clean webdriver.");
+		$webDriver->quit();
+
 	} catch(Exception $e) {
 		$log->debug(print_r($e, true));
 		//TODO send alert mail.
 	} finally {
-		$log->debug("clean webdriver.");
-		$webDriver->quit();
+		
 	}
 	
-
 	return $data;
 }
 
