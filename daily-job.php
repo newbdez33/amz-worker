@@ -32,16 +32,15 @@ $db = DynamoDbClient::factory(array(
     'region' => 'ap-northeast-1'
 ));
 
-$qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/fetch_jobs";
-
 $products = new ItemIterator($db->getScanIterator(array(
     'TableName' => 'products_amazon'
 )));
 
 foreach ($products as $p) {
+    $data = array("asin" => $p['asin'], "url" => $p["url"]);
 	$r = $q->sendMessage(array(
 	    "QueueUrl" => "https://sqs.ap-northeast-1.amazonaws.com/426901641069/daily_queue",
-	    "MessageBody" => $p['asin']
+	    "MessageBody" => json_encode($data)
 	));
 	$msid = $r['MessageId'];
     echo "{$p['asin']} {$p['title']}, {$msid}\n";
