@@ -1,6 +1,8 @@
 <?php
 require_once('vendor/autoload.php');
 require "../pr/aws.inc.php";
+require "./mail.php";
+
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
@@ -36,6 +38,8 @@ $products = new ItemIterator($db->getScanIterator(array(
     'TableName' => 'products_amazon'
 )));
 
+$msg = "";
+$c = 0;
 foreach ($products as $p) {
     $data = array("asin" => $p['asin'], "url" => $p["url"]);
 	$r = $q->sendMessage(array(
@@ -43,5 +47,10 @@ foreach ($products as $p) {
 	    "MessageBody" => json_encode($data)
 	));
 	$msid = $r['MessageId'];
-    echo "{$p['asin']} {$p['title']}, {$msid}\n";
+    $msg .= "{$p['asin']} {$p['title']}, {$msid}\n";
+    $c++;
 }
+
+$msg = "Total count:".$c."\n\n".$msg;
+
+sendMessage($msg);

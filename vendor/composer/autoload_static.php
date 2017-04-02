@@ -24,6 +24,7 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\EventDispatcher\\' => 34,
+            'SendCloud\\' => 10,
         ),
         'P' => 
         array (
@@ -70,6 +71,10 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+        ),
+        'SendCloud\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/china-shevy/sendcloud-email-v2/src',
         ),
         'Psr\\Log\\' => 
         array (
