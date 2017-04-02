@@ -48,7 +48,7 @@ function fetchAmazonUrl($url) {
     		$price = $element->getText();
 			if ($price != "") {
 				preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
-				$data["price"] = str_replace(",", "", $match[2]);
+				$data["price"] = str_replace(",", ".", $match[2]);
 				$data["currency"] = $match[1];
 			}
 		}
