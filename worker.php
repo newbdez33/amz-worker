@@ -20,7 +20,7 @@ use Monolog\Handler\StreamHandler;
 //TODO Docker restart
 
 $log = new Logger('info');
-$log->pushHandler(new StreamHandler('./debug.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler('./logs/debug.log', Logger::DEBUG));
 
 $q = SqsClient::factory(array(
     'credentials' => array(
