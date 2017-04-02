@@ -16,8 +16,7 @@
         "monolog/monolog": "^1.17",
         "schmiddim/amazon-asin-fetcher": "^1.0",
         "aws/aws-sdk-php": "2.*",
-        "facebook/webdriver": "1.*",
-	"china-shevy/sendcloud-email-v2": "dev-master" 
+        "facebook/webdriver": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0"
