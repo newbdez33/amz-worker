@@ -15,7 +15,7 @@ function putPrice($price) {
 	));
 }
 
-function convertPrice($price) {
+function convertPrice($price, $url) {
 	$urlparser = new \Amazon\AsinParser($url);
 	preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
 	$value = $match[2];
@@ -66,7 +66,7 @@ function fetchAmazonUrl($url) {
 		if ($element->isDisplayed()) {
     		$price = $element->getText();
 			if ($price != "") {
-				$data = convertPrice($price);
+				$data = convertPrice($price, $url);
 			}
 		}
 	} catch(Exception $e) {
