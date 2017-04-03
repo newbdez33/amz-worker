@@ -15,8 +15,28 @@ function putPrice($price) {
 	));
 }
 
+function convertPrice($price) {
+	preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
+	$value = $match[2];
+	if ( in_array($urlparser->getTld(), array('es', 'fr', 'it', 'nl', 'com.br')) )  {	//这些情况把,当.用
+		$comma = ".";
+		$dot = ",";
+	}else {
+		$comma = ",";
+		$dot = ".";
+	}
+	$value = str_replace($comma, "", $value);
+	$value = str_replace($dot, ".", $value);
+	$data["price"] = $value;
+	$data["currency"] = $match[1];
+	return $data;
+}
+
 function fetchAmazonUrl($url) {
 	global $log;
+
+	$urlparser = new \Amazon\AsinParser($url);
+
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
 	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
 
@@ -47,9 +67,7 @@ function fetchAmazonUrl($url) {
 		if ($element->isDisplayed()) {
     		$price = $element->getText();
 			if ($price != "") {
-				preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
-				$data["price"] = str_replace(",", ".", $match[2]);
-				$data["currency"] = $match[1];
+				$data = convertPrice($price);
 			}
 		}
 	} catch(Exception $e) {

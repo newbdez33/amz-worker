@@ -17,3 +17,4 @@ DerivedData
 .DS_Store
 /aws.inc.php
 /debug.log
+/logs/pricebot.log
