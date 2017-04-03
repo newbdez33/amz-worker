@@ -65,6 +65,7 @@ function fetchAmazonUrl($url) {
 		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
 		if ($element->isDisplayed()) {
     		$price = $element->getText();
+    		echo "price:{$price}\n";
 			if ($price != "") {
 				$data = convertPrice($price, $url);
 			}
@@ -81,8 +82,6 @@ function fetchAmazonUrl($url) {
 	$webDriver->close();
 	$webDriver->quit();
 	
-	echo "fetched:\n";
-	print_r($data);
 	$log->debug("fetched price:".print_r($data, true));
 	return $data;
 }
