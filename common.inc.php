@@ -16,6 +16,7 @@ function putPrice($price) {
 }
 
 function convertPrice($price) {
+	$urlparser = new \Amazon\AsinParser($url);
 	preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
 	$value = $match[2];
 	if ( in_array($urlparser->getTld(), array('es', 'fr', 'it', 'nl', 'com.br')) )  {	//这些情况把,当.用
@@ -34,8 +35,6 @@ function convertPrice($price) {
 
 function fetchAmazonUrl($url) {
 	global $log;
-
-	$urlparser = new \Amazon\AsinParser($url);
 
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
 	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
