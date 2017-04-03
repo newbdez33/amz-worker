@@ -80,6 +80,27 @@ function fetchAmazonUrl($url) {
 		//
 	}
 
+	if ($data["price"] == '0') {
+		try {
+			$element = $webDriver->findElement(WebDriverBy::id("priceblock_dealprice"));
+			if ($element->isDisplayed()) {
+	    		$price = $element->getText();
+	    		echo "price2:{$price}\n";
+				if ($price != "") {
+					$result = convertPrice($price, $url);
+					$data["price"] = $result["price"];
+					$data["currency"] = $result["currency"];
+				}
+			}
+		} catch(Exception $e) {
+			$log->debug("find element price failed.");
+			//print_r($e);
+			//TODO send alert mail.
+		} finally {
+			//
+		}
+	}
+
 	echo "close window\n";
 	$webDriver->close();
 	$webDriver->quit();
