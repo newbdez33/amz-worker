@@ -67,7 +67,9 @@ function fetchAmazonUrl($url) {
     		$price = $element->getText();
     		echo "price:{$price}\n";
 			if ($price != "") {
-				$data = convertPrice($price, $url);
+				$result = convertPrice($price, $url);
+				$data["price"] = $result["price"];
+				$data["currency"] = $result["currency"];
 			}
 		}
 	} catch(Exception $e) {
