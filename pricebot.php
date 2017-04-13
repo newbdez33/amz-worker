@@ -63,8 +63,8 @@ function mainLoop() {
             $price["date"] = date("Ymd");
             $price["asin"] = $data["asin"];
             //EUR 29.99
-            $price["price"] = $item["price"];
-            $price["currency"] = $item["currency"];
+            $price["price"] = trim($item["price"]);
+            $price["currency"] = trim($item["currency"]);
             putPrice($price);
         }
         $q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
