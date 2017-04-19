@@ -31,7 +31,7 @@ $db = DynamoDbClient::factory(array(
 ));
 
 $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/daily_queue";
-
+echo "started.\n";
 while ( true ) {
     //$log->debug("start mainloop");
     mainLoop();
@@ -61,22 +61,24 @@ function mainLoop() {
             $log->debug("Get:".$url);
             $item = fetchAmazonUrl($url);
             //print_r($item);
-            $price["date"] = date("Ymd");
+            $price["t"] = time();
             $price["asin"] = $data["asin"];
             //EUR 29.99
-            $price["price"] = trim($item["price"]);
+            $price["price"] = $item["price"];
             $price["currency"] = trim($item["currency"]);
-            if ($price["price"] != "0" && $price["currency"] == "") {
+            if ($price["price"] != 0 && $price["currency"] != "") {
                 try {
                     putPrice($price);
                 } catch(Exception $e) {
                     //TODO error report
+                    echo "put to db error.\n";
                     sendMessage(print_r($price, true));
                 }
             }else {
                 $log->debug("Invalied price:". print_r($price, true));
             }
         }
+
         $q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
     }else {
         //$log->debug("No message.");

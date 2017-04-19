@@ -10,7 +10,7 @@ function putPrice($price) {
 	$marshaler = new Marshaler();
 	$p_data = $marshaler->marshalItem($price);
 	$result = $db->putItem(array(
-	    'TableName' => 'prices_amazon',
+	    'TableName' => 'prices_history',
 	    'Item' => $p_data
 	));
 }
@@ -28,7 +28,7 @@ function convertPrice($price, $url) {
 	}
 	$value = str_replace($comma, "", $value);
 	$value = str_replace($dot, ".", $value);
-	$data["price"] = $value;
+	$data["price"] = doubleval($value);
 	$data["currency"] = $match[1];
 	return $data;
 }
@@ -41,8 +41,8 @@ function fetchAmazonUrl($url) {
 
 	$data = array();
 	//default price
-	$data["price"] = '0';
-	$data["currency"] = ' ';
+	$data["price"] = 0;
+	$data["currency"] = '';
 
 	try {
 		echo "fetching...";
@@ -68,7 +68,7 @@ function fetchAmazonUrl($url) {
     		echo "price:{$price}\n";
 			if ($price != "") {
 				$result = convertPrice($price, $url);
-				$data["price"] = $result["price"];
+				$data["price"] = doubleval($result["price"]);
 				$data["currency"] = $result["currency"];
 			}
 		}
@@ -88,7 +88,7 @@ function fetchAmazonUrl($url) {
 	    		echo "price2:{$price}\n";
 				if ($price != "") {
 					$result = convertPrice($price, $url);
-					$data["price"] = $result["price"];
+					$data["price"] = doubleval($result["price"]);
 					$data["currency"] = $result["currency"];
 				}
 			}
