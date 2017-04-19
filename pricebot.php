@@ -66,13 +66,16 @@ function mainLoop() {
             //EUR 29.99
             $price["price"] = trim($item["price"]);
             $price["currency"] = trim($item["currency"]);
-            try {
-                putPrice($price);
-            } catch(Exception $e) {
-                //TODO error report
-                sendMessage(print_r($price, true));
+            if ($price["price"] != "0" && $price["currency"] == "") {
+                try {
+                    putPrice($price);
+                } catch(Exception $e) {
+                    //TODO error report
+                    sendMessage(print_r($price, true));
+                }
+            }else {
+                $log->debug("Invalied price:". print_r($price, true));
             }
-            
         }
         $q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
     }else {
