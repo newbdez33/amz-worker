@@ -2,6 +2,7 @@
 require_once('vendor/autoload.php');
 require "../pr/aws.inc.php";
 require "./common.inc.php";
+require "./mail.php";
 use Aws\Sqs\SqsClient;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
@@ -65,7 +66,13 @@ function mainLoop() {
             //EUR 29.99
             $price["price"] = trim($item["price"]);
             $price["currency"] = trim($item["currency"]);
-            putPrice($price);
+            try {
+                putPrice($price);
+            } catch(Exception $e) {
+                //TODO error report
+                sendMessage(print_r($price, true));
+            }
+            
         }
         $q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
     }else {
