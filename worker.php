@@ -64,6 +64,7 @@ function mainLoop() {
 			$log->debug("Invalied json");
 		}else {
 			$url = $data['url'];
+			echo "Get :".$url."\n";
 			$log->debug("Get:".$url);
 			$fetched = fetchAmazonUrl($url);
 			print_r($fetched);
@@ -76,11 +77,14 @@ function mainLoop() {
 			$updated["lowest"] = $fetched["price"];
 			putItem($updated);
 
-			$price["t"] = time();
-		    $price["asin"] = $updated["asin"];
-		    $price["price"] = doubleval($updated["price"]);
-		    $price["currency"] = trim($updated["currency"]);
-			putPrice($price);
+			if ( doubleval($updated["price"]) > 0 && trim($updated["currency"]) != "" ) {
+				$price["t"] = time();
+			    $price["asin"] = $updated["asin"];
+			    $price["price"] = doubleval($updated["price"]);
+			    $price["currency"] = trim($updated["currency"]);
+				putPrice($price);
+			}
+			
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
