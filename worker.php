@@ -75,6 +75,12 @@ function mainLoop() {
 			$updated["highest"] = $fetched["price"];
 			$updated["lowest"] = $fetched["price"];
 			putItem($updated);
+
+			$price["t"] = time();
+		    $price["asin"] = $updated["asin"];
+		    $price["price"] = doubleval($updated["price"]);
+		    $price["currency"] = trim($updated["currency"]);
+			putPrice($price);
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
@@ -92,15 +98,7 @@ function putItem($item) {
 	    'Item' => $data
 	));
 
-	$price["date"] = date("Ymd");
-	$price["asin"] = $item["asin"];
-	//EUR 29.99
-	$price["price"] = $item["price"];
-	$price["currency"] = $item["currency"];
-	
-	putPrice($price);
-
-    //Error handling
+	//Error handling
 	//$log->debug("put item");
     return $result;
 }
