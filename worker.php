@@ -64,7 +64,7 @@ function mainLoop() {
 			$log->debug("Invalied json");
 		}else {
 			$url = $data['url'];
-			echo "Get :".$url."\n";
+			echo "Get:".$url."\n";
 			$log->debug("Get:".$url);
 			$fetched = fetchAmazonUrl($url);
 			print_r($fetched);
@@ -77,13 +77,23 @@ function mainLoop() {
 			$updated["lowest"] = $fetched["price"];
 			putItem($updated);
 
-			if ( doubleval($updated["price"]) > 0 && trim($updated["currency"]) != "" ) {
-				$price["t"] = time();
-			    $price["asin"] = $updated["asin"];
-			    $price["price"] = doubleval($updated["price"]);
-			    $price["currency"] = trim($updated["currency"]);
-				putPrice($price);
-			}
+			
+			$price["t"] = time();
+		    $price["asin"] = $updated["asin"];
+		    $price["price"] = doubleval($updated["price"]);
+		    $price["currency"] = trim($updated["currency"]);
+			if ($price["price"] > 0 && !empty($price["currency"])) {
+                try {
+                    putPrice($price);
+                } catch(Exception $e) {
+                	print_r($price);
+                    //TODO error report
+                    echo "put to db error.\n";
+                    sendMessage(print_r($price, true));
+                }
+            }else {
+                $log->debug("Invalied price:". print_r($price, true));
+            }
 			
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
@@ -96,6 +106,9 @@ function putItem($item) {
 	global $db, $q, $log;
 
 	$marshaler = new Marshaler();
+	$item['price'] = doubleval($item['price']);
+	$item['highest'] = doubleval($item['highest']);
+	$item['highest'] = doubleval($item['highest']);
     $data = $marshaler->marshalItem($item);
 	$result = $db->putItem(array(
 	    'TableName' => 'products_amazon',
