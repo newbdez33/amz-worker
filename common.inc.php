@@ -15,6 +15,74 @@ function putPrice($price) {
 	));
 }
 
+function jsonObjectFromItem($item) {
+    $marshaler = new Marshaler();
+    $data = $marshaler->unmarshalItem($item);
+    return $data;
+}
+
+function updatePrices($pid, $current) {
+	global $db;
+
+	$lowest = $current;
+    $result = $db->query(array(
+        'TableName' => 'prices_history',
+        'IndexName' => 'asin-price-index',
+        'ScanIndexForward' => true,
+        'Limit' => 1,
+        'KeyConditionExpression' => "asin = :a",
+        'ExpressionAttributeValues' => array(
+                ":a" => ['S' => $pid],
+        ),
+    ));
+    if ( is_object($result) && is_array($result["Items"]) ) {
+        foreach ($result["Items"] as $key => $value) {
+            $item = jsonObjectFromItem($value);
+            $lowest = $item["price"];
+        }
+    }
+
+    $highest = $current;
+    $result = $db->query(array(
+        'TableName' => 'prices_history',
+        'IndexName' => 'asin-price-index',
+        'ScanIndexForward' => false,
+        'Limit' => 1,
+        'KeyConditionExpression' => "asin = :a",
+        'ExpressionAttributeValues' => array(
+                ":a" => ['S' => $pid],
+        ),
+    ));
+    if ( is_object($result) && is_array($result["Items"]) ) {
+        foreach ($result["Items"] as $key => $value) {
+            $item = jsonObjectFromItem($value);
+            $highest = $item["price"];
+        }
+    }
+
+    $resp = $db->updateItem([
+    	'TableName' => 'products_amazon',
+	    'Key' => [
+	    	'asin' => [
+	    		'S' => $pid
+	    	] 
+	    ],
+	    'ExpressionAttributeNames' => [
+	        '#L' => 'lowest',
+	        '#H' => 'highest',
+	        '#C' => 'price'
+	    ],
+	    'ExpressionAttributeValues' =>  [
+	        ':l' => ['N' => doubleval($lowest)],
+	        ':h' => ['N' => doubleval($highest)],
+	        ':c' => ['N' => doubleval($current)]
+	    ] ,
+	    'UpdateExpression' => 'set #L = :l, #H = :h, #C = :c',
+	    'ReturnValues' => 'ALL_NEW' 
+    ]);
+
+}
+
 function convertPrice($price, $url) {
 	$urlparser = new \Amazon\AsinParser($url);
 	preg_match('/(.*?)([\d\.,]+)$/', $price, $match);

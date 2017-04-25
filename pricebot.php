@@ -69,6 +69,7 @@ function mainLoop() {
             if ($price["price"] != 0 && $price["currency"] != "") {
                 try {
                     putPrice($price);
+                    updatePrices($data["asin"], $price["price"]);
                 } catch(Exception $e) {
                     //TODO error report
                     echo "put to db error.\n";
