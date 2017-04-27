@@ -4,9 +4,11 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Aws\DynamoDb\Marshaler;
 
-function getCleanUrl($url, $asin) {
+function getCleanUrl($url) {
 	$parts = parse_url($url);
-	return "{$parts['scheme']}{$parts['host']}/dp/{$asin}/?psc=1";
+	$fetcher = new \Amazon\AsinParser($url);
+    $asin = $fetcher->getAsin();
+	return "{$parts['scheme']}://{$parts['host']}/dp/{$asin}/?psc=1";
 }
 
 function putPrice($price) {
