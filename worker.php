@@ -75,6 +75,7 @@ function mainLoop() {
 			$updated = array_merge($fetched, $data);
 			$updated["highest"] = $fetched["price"];
 			$updated["lowest"] = $fetched["price"];
+			$updated['clean_url'] = getCleanUrl($url);
 			putItem($updated);
 
 			

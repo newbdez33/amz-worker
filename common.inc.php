@@ -4,6 +4,11 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Aws\DynamoDb\Marshaler;
 
+function getCleanUrl($url, $asin) {
+	$parts = parse_url($url);
+	return "{$parts['scheme']}{$parts['host']}/dp/{$asin}/?psc=1";
+}
+
 function putPrice($price) {
 	global $db;
 	
