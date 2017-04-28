@@ -77,14 +77,16 @@ function updatePrices($pid, $current) {
 	    'ExpressionAttributeNames' => [
 	        '#L' => 'lowest',
 	        '#H' => 'highest',
-	        '#C' => 'price'
+	        '#C' => 'price',
+	        '#U' => 'updated_at'
 	    ],
 	    'ExpressionAttributeValues' =>  [
 	        ':l' => ['N' => doubleval($lowest)],
 	        ':h' => ['N' => doubleval($highest)],
-	        ':c' => ['N' => doubleval($current)]
+	        ':c' => ['N' => doubleval($current)],
+	        ':u' => ['N' => time()]
 	    ] ,
-	    'UpdateExpression' => 'set #L = :l, #H = :h, #C = :c',
+	    'UpdateExpression' => 'set #L = :l, #H = :h, #C = :c, #U = :u',
 	    'ReturnValues' => 'ALL_NEW' 
     ]);
 

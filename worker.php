@@ -109,7 +109,8 @@ function putItem($item) {
 	$marshaler = new Marshaler();
 	$item['price'] = doubleval($item['price']);
 	$item['highest'] = doubleval($item['highest']);
-	$item['highest'] = doubleval($item['highest']);
+	$item['lowest'] = doubleval($item['lowest']);
+	$item["updated_at"] = time();
     $data = $marshaler->marshalItem($item);
 	$result = $db->putItem(array(
 	    'TableName' => 'products_amazon',
