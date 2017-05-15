@@ -107,6 +107,9 @@ function putItem($item) {
 	global $db, $q, $log;
 
 	$marshaler = new Marshaler();
+if($item['currency']=='') {
+$item['currency'] = ' ';
+}
 	$item['price'] = doubleval($item['price']);
 	$item['highest'] = doubleval($item['highest']);
 	$item['lowest'] = doubleval($item['lowest']);
