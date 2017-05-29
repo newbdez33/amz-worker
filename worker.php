@@ -62,6 +62,7 @@ function mainLoop() {
 		$data = json_decode($json, true);
 		if ( !$data ) {
 			$log->debug("Invalied json");
+			slack_notify("Invalied json");
 		}else {
 			$url = $data['url'];
 			echo "Get:".$url."\n";
@@ -84,6 +85,7 @@ function mainLoop() {
 		    $price["price"] = doubleval($updated["price"]);
 		    $price["currency"] = trim($updated["currency"]);
 			if ($price["price"] > 0 && !empty($price["currency"])) {
+				slack_notify("FETCHED:\n". print_r($price, true));
                 try {
                     putPrice($price);
                 } catch(Exception $e) {
@@ -91,8 +93,10 @@ function mainLoop() {
                     //TODO error report
                     echo "put to db error.\n";
                     sendMessage(print_r($price, true));
+                    slack_notify("DB error:". print_r($price, true));
                 }
             }else {
+            	slack_notify("Invalied price:". print_r($price, true));
                 $log->debug("Invalied price:". print_r($price, true));
             }
 			
@@ -107,9 +111,9 @@ function putItem($item) {
 	global $db, $q, $log;
 
 	$marshaler = new Marshaler();
-if($item['currency']=='') {
-$item['currency'] = ' ';
-}
+	if($item['currency']=='') {
+		$item['currency'] = ' ';
+	}
 	$item['price'] = doubleval($item['price']);
 	$item['highest'] = doubleval($item['highest']);
 	$item['lowest'] = doubleval($item['lowest']);
@@ -125,5 +129,23 @@ $item['currency'] = ' ';
     return $result;
 }
 
+function slack_notify($data) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/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");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"text\":\"{$data}\"}");
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+    $headers = array();
+    $headers[] = "Content-Type: application/x-www-form-urlencoded";
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $result = curl_exec($ch);
+    if (curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+    }
+    curl_close ($ch);
+}
 
 
