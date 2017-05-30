@@ -62,7 +62,7 @@ function mainLoop() {
 		$data = json_decode($json, true);
 		if ( !$data ) {
 			$log->debug("Invalied json");
-			slack_notify("Invalied json");
+			slack_notify("NOT JSON:".$json);
 		}else {
 			$url = $data['url'];
 			echo "Get:".$url."\n";
