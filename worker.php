@@ -62,7 +62,7 @@ function mainLoop() {
 		$data = json_decode($json, true);
 		if ( !$data ) {
 			$log->debug("Invalied json");
-			slack_notify("NOT JSON:".$json);
+			slack_notify("Worker:".$json);
 		}else {
 			$url = $data['url'];
 			echo "Get:".$url."\n";
@@ -127,25 +127,6 @@ function putItem($item) {
 	//Error handling
 	//$log->debug("put item");
     return $result;
-}
-
-function slack_notify($data) {
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/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");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"text\":\"{$data}\"}");
-    curl_setopt($ch, CURLOPT_POST, 1);
-
-    $headers = array();
-    $headers[] = "Content-Type: application/x-www-form-urlencoded";
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-    $result = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo 'Error:' . curl_error($ch);
-    }
-    curl_close ($ch);
 }
 
 

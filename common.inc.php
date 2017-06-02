@@ -206,3 +206,22 @@ function fetchAmazonUrl($url) {
 	$log->debug("fetched price:".print_r($data, true));
 	return $data;
 }
+
+function slack_notify($data) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/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");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"text\":\"{$data}\"}");
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+    $headers = array();
+    $headers[] = "Content-Type: application/x-www-form-urlencoded";
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $result = curl_exec($ch);
+    if (curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+    }
+    curl_close ($ch);
+}
