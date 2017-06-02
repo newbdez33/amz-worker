@@ -12,6 +12,13 @@ use Aws\DynamoDb\Marshaler;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+register_shutdown_function(function () {
+    global $_, $argv; 
+    // restart myself
+    slack_notify("Worker: Check me if you can, I maybe quited.");
+    pcntl_exec($_, $argv);
+});
+
 //
 // $d = date("Ymd-His");
 // rename("./debug.log", "./debug_{$d}.log");

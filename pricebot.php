@@ -32,6 +32,14 @@ $db = DynamoDbClient::factory(array(
 
 $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/daily_queue";
 echo "started.\n";
+
+register_shutdown_function(function () {
+    global $_, $argv; 
+    // restart myself
+    slack_notify("Bot: Check me if you can, I maybe exited.");
+    pcntl_exec($_, $argv);
+});
+
 while ( true ) {
     //$log->debug("start mainloop");
     mainLoop();
