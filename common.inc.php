@@ -243,7 +243,7 @@ function fetchAmazonUrl($url) {
 
 	if ($data["price"] == '0') {
 		try {
-			$element = $webDriver->findElement(WebDriverBy::className("a-color-price"));
+			$element = $webDriver->findElement(WebDriverBy::id("unqualifiedBuyBox"))->(WebDriverBy::className("a-color-price"));
 			if ($element->isDisplayed()) {
 	    		$price = $element->getText();
 	    		echo "price2:{$price}\n";
