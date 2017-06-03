@@ -138,6 +138,21 @@ function fetchAmazonUrl($url) {
 		//
 	}
 
+	if ($data["photo"] == "") {
+	try {
+                echo "retry ...";
+                $element = $webDriver->findElement(WebDriverBy::id("imgBlkFront"));
+                $data["photo"] = $element->getAttribute("src");
+
+        } catch(Exception $e) {
+                //$log->debug(print_r($e, true));
+                print_r($e);
+                //TODO send alert mail.
+        } finally {
+                //
+        }
+	}
+
 	try {
 		$element = $webDriver->findElement(WebDriverBy::id("priceblock_ourprice"));
 		if ($element->isDisplayed()) {
