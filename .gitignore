@@ -19,3 +19,5 @@ DerivedData
 /debug.log
 /logs/pricebot.log
 /logs/worker.log
+crontab.log
+

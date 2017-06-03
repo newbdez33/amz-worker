@@ -131,7 +131,7 @@ function fetchAmazonUrl($url) {
 		$data["photo"] = $element->getAttribute("src");
 
 	} catch(Exception $e) {
-		$log->debug(print_r($e, true));
+		//$log->debug(print_r($e, true));
 		print_r($e);
 		//TODO send alert mail.
 	} finally {
@@ -150,7 +150,7 @@ function fetchAmazonUrl($url) {
 			}
 		}
 	} catch(Exception $e) {
-		$log->debug("find element price failed.");
+		//$log->debug("find element price failed.");
 		//print_r($e);
 		//TODO send alert mail.
 	} finally {
@@ -170,7 +170,7 @@ function fetchAmazonUrl($url) {
 				}
 			}
 		} catch(Exception $e) {
-			$log->debug("find element price failed.");
+			//$log->debug("find element price failed.");
 			//print_r($e);
 			//TODO send alert mail.
 		} finally {
@@ -191,7 +191,7 @@ function fetchAmazonUrl($url) {
 				}
 			}
 		} catch(Exception $e) {
-			$log->debug("find element price failed.");
+			//$log->debug("find element price failed.");
 			//print_r($e);
 			//TODO send alert mail.
 		} finally {
@@ -212,7 +212,7 @@ function fetchAmazonUrl($url) {
 				}
 			}
 		} catch(Exception $e) {
-			$log->debug("find element price failed.");
+			//$log->debug("find element price failed.");
 			//print_r($e);
 			//TODO send alert mail.
 		} finally {
@@ -224,7 +224,7 @@ function fetchAmazonUrl($url) {
 	$webDriver->close();
 	$webDriver->quit();
 	
-	$log->debug("fetched price:".print_r($data, true));
+	//$log->debug("fetched price:".print_r($data, true));
 	return $data;
 }
 
