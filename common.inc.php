@@ -93,6 +93,12 @@ function updatePrices($pid, $current) {
 }
 
 function convertPrice($price, $url) {
+
+	$price_arr = explode("-", $price);
+	if ( count($price_arr) > 1 ) {
+		$price = trim($price_arr[0]);
+	}
+
 	$urlparser = new \Amazon\AsinParser($url);
 	preg_match('/(.*?)([\d\.,]+)$/', $price, $match);
 	$value = $match[2];
@@ -234,6 +240,7 @@ function fetchAmazonUrl($url) {
 			//
 		}
 	}
+
 
 	echo "close window\n";
 	$webDriver->close();
