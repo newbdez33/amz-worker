@@ -45,7 +45,9 @@ function updatePrices($pid, $current) {
     if ( is_object($result) && is_array($result["Items"]) ) {
         foreach ($result["Items"] as $key => $value) {
             $item = jsonObjectFromItem($value);
-            $lowest = $item["price"];
+            if ( $current > $item["price"] ) {
+            	$lowest = $item["price"];
+            }
         }
     }
 
@@ -63,7 +65,9 @@ function updatePrices($pid, $current) {
     if ( is_object($result) && is_array($result["Items"]) ) {
         foreach ($result["Items"] as $key => $value) {
             $item = jsonObjectFromItem($value);
-            $highest = $item["price"];
+            if ( $current < $item["price"] ) {
+            	$highest = $item["price"];
+            }
         }
     }
 
