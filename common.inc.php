@@ -269,7 +269,7 @@ function fetchAmazonUrl($url) {
 
 	if ($data["price"] == '0') {
 		try {
-			$element = $webDriver->findElement(WebDriverBy::id("snsPriceBlock"));
+			$element = $webDriver->findElement(WebDriverBy::id("snsPrice"));
 			$element = $element->findElement(WebDriverBy::className("a-color-price"));
 			if ($element->isDisplayed()) {
 	    		$price = $element->getText();
