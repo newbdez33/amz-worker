@@ -37,7 +37,7 @@ register_shutdown_function(function () {
     global $_, $argv; 
     // restart myself
     slack_notify("Bot: Check me if you can, I maybe exited.");
-    pcntl_exec($_, $argv);
+    pcntl_exec("/usr/bin/php /home/newbdez33/production/www/bot/pricebot.php", $argv);
 });
 
 while ( true ) {
