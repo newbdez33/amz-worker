@@ -124,7 +124,7 @@ function fetchAmazonUrl($url) {
 	global $log;
 
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities);
+	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities, 60*1000, 60*1000);
 
 	$data = array();
 	//default price
