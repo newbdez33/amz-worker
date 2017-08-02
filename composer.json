@@ -15,6 +15,7 @@
         "php": ">=5.5.0",
         "monolog/monolog": "^1.17",
         "schmiddim/amazon-asin-fetcher": "^1.0",
+        "exeu/apai-io": "~2.0",
         "aws/aws-sdk-php": "2.*",
         "facebook/webdriver": "1.*"
     },

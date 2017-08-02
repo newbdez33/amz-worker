@@ -3,6 +3,10 @@ This project versioning adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.4.1 - 2017-04-28
+### Fixed
+- Do not throw notice `Constant CURLOPT_CONNECTTIMEOUT_MS already defined`.
+
 ## 1.4.0 - 2017-03-22
 ### Changed
 - Cookies should now be set using `Cookie` value object instead of an array when passed to to `addCookie()` method of `WebDriverOptions`.
