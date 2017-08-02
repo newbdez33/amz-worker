@@ -6,6 +6,12 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
 {
+    public static $files = array (
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
@@ -28,10 +34,17 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
         ),
         'F' => 
         array (
@@ -41,6 +54,10 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
+        ),
+        'A' => 
+        array (
+            'ApaiIO\\' => 7,
         ),
     );
 
@@ -75,9 +92,25 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
         'Facebook\\WebDriver\\' => 
         array (
@@ -90,6 +123,10 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'ApaiIO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/exeu/apai-io/src/ApaiIO',
         ),
     );
 
@@ -129,7 +166,13 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
+        'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
+        'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/AssertionFailedError.php',
+        'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
+        'PHPUnit\\Framework\\Test' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Test.php',
         'PHPUnit\\Framework\\TestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestCase.php',
+        'PHPUnit\\Framework\\TestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestListener.php',
+        'PHPUnit\\Framework\\TestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestSuite.php',
         'PHPUnit_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit_Extensions_GroupTestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
         'PHPUnit_Extensions_PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -151,6 +194,7 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'PHPUnit_Framework_Constraint_ClassHasStaticAttribute' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ClassHasStaticAttribute.php',
         'PHPUnit_Framework_Constraint_Composite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Composite.php',
         'PHPUnit_Framework_Constraint_Count' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Count.php',
+        'PHPUnit_Framework_Constraint_DirectoryExists' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/DirectoryExists.php',
         'PHPUnit_Framework_Constraint_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Exception.php',
         'PHPUnit_Framework_Constraint_ExceptionCode' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ExceptionCode.php',
         'PHPUnit_Framework_Constraint_ExceptionMessage' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ExceptionMessage.php',
@@ -168,8 +212,10 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'PHPUnit_Framework_Constraint_IsJson' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsJson.php',
         'PHPUnit_Framework_Constraint_IsNan' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsNan.php',
         'PHPUnit_Framework_Constraint_IsNull' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsNull.php',
+        'PHPUnit_Framework_Constraint_IsReadable' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsReadable.php',
         'PHPUnit_Framework_Constraint_IsTrue' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsTrue.php',
         'PHPUnit_Framework_Constraint_IsType' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsType.php',
+        'PHPUnit_Framework_Constraint_IsWritable' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsWritable.php',
         'PHPUnit_Framework_Constraint_JsonMatches' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/JsonMatches.php',
         'PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/JsonMatches/ErrorMessageProvider.php',
         'PHPUnit_Framework_Constraint_LessThan' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/LessThan.php',
@@ -185,7 +231,7 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'PHPUnit_Framework_Constraint_TraversableContains' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContains.php',
         'PHPUnit_Framework_Constraint_TraversableContainsOnly' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContainsOnly.php',
         'PHPUnit_Framework_Constraint_Xor' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Xor.php',
-        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_CoveredCodeNotExecutedException.php',
+        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/CoveredCodeNotExecutedException.php',
         'PHPUnit_Framework_Error' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error.php',
         'PHPUnit_Framework_Error_Deprecated' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Deprecated.php',
         'PHPUnit_Framework_Error_Notice' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Notice.php',
@@ -197,7 +243,7 @@ class ComposerStaticInitb053f5a19cb13f0e13557552d0e96769
         'PHPUnit_Framework_IncompleteTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestCase.php',
         'PHPUnit_Framework_IncompleteTestError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestError.php',
         'PHPUnit_Framework_InvalidCoversTargetException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/InvalidCoversTargetException.php',
-        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_MissingCoversAnnotationException.php',
+        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MissingCoversAnnotationException.php',
         'PHPUnit_Framework_MockObject_BadMethodCallException' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Exception/BadMethodCallException.php',
         'PHPUnit_Framework_MockObject_Builder_Identity' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/Identity.php',
         'PHPUnit_Framework_MockObject_Builder_InvocationMocker' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/InvocationMocker.php',

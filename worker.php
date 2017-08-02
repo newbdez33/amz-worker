@@ -16,7 +16,7 @@ register_shutdown_function(function () {
     global $_, $argv; 
     // restart myself
     slack_notify("Worker: Check me if you can, I maybe quited.");
-    pcntl_exec($_, $argv);
+    pcntl_exec("/usr/bin/php /var/www/bot/worker.php", $argv);
 });
 
 //
@@ -72,10 +72,20 @@ function mainLoop() {
 			slack_notify("Worker:".$json);
 		}else {
 			$url = $data['url'];
-			echo "Get:".$url."\n";
+			$asin = $data['asin'];
+			$aac = $data["aac"];
+			echo "Get:".$asin."\n";
 			$log->debug("Get:".$url);
-			$fetched = fetchAmazonUrl($url);
+
+			$fetched = array();
+			if ( $aac == "com" ) {
+				$fetched = fetchItem($asin, $aac);
+			}else {
+				$fetched = fetchAmazonUrl($url);
+			}
+			
 			print_r($fetched);
+
 			if (!array_key_exists("title", $fetched)) {
 				echo "fetch price failed. may try it again later.\n";
 				return;
@@ -83,7 +93,12 @@ function mainLoop() {
 			$updated = array_merge($fetched, $data);
 			$updated["highest"] = $fetched["price"];
 			$updated["lowest"] = $fetched["price"];
-			$updated['clean_url'] = getCleanUrl($url);
+			if ( $aac == "com" ) {
+				$updated['clean_url'] = $fetched["clean_url"];
+			}else {
+				$updated['clean_url'] = getCleanUrl($url);
+			}
+			
 			putItem($updated);
 
 			

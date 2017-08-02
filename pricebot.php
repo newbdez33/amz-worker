@@ -67,8 +67,18 @@ function mainLoop() {
             slack_notify("Bot:".$json);
         }else {
             $url = $data['url'];
+            $asin = $data['asin'];
+            $aac = $data["aac"];
+
             $log->debug("Get:".$url);
-            $item = fetchAmazonUrl($url);
+
+            $item = array();
+            if ( $aac == "com" ) {
+                $item = fetchItem($asin, $aac);
+            }else {
+                $item = fetchAmazonUrl($url);
+            }
+            
             //print_r($item);
             $price["t"] = time();
             $price["asin"] = $data["asin"];

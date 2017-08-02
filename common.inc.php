@@ -4,6 +4,10 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Aws\DynamoDb\Marshaler;
 
+use ApaiIO\ApaiIO;
+use ApaiIO\Configuration\GenericConfiguration;
+use ApaiIO\Operations\Lookup;
+
 function getCleanUrl($url) {
 	$parts = parse_url($url);
 	$fetcher = new \Amazon\AsinParser($url);
@@ -296,6 +300,40 @@ function fetchAmazonUrl($url) {
 	
 	//$log->debug("fetched price:".print_r($data, true));
 	return $data;
+}
+
+function fetchItem($asin, $country) {
+	$conf = new GenericConfiguration();
+	$client = new \GuzzleHttp\Client();
+	$request = new \ApaiIO\Request\GuzzleRequest($client);
+	try {
+	    $conf
+	        ->setCountry($country)
+	        ->setAccessKey(AWS_API_KEY)
+	        ->setSecretKey(AWS_API_SECRET_KEY)
+	        ->setAssociateTag(AWS_ASSOCIATE_TAG)
+	        ->setRequest($request)
+	        ->setResponseTransformer(new \ApaiIO\ResponseTransformer\XmlToArray());
+	} catch (\Exception $e) {
+	    return false;	//
+	}
+	$apaiIO = new ApaiIO($conf);
+	$lookup = new Lookup();
+	$lookup->setItemId($asin);
+	$lookup->setResponseGroup(array('Medium'));
+	$formattedResponse = $apaiIO->runOperation($lookup);
+	$item = array();
+	$obj = $formattedResponse["Items"]["Item"];
+
+	$item["photo"] = $obj["MediumImage"]["URL"];
+	$item["price"] = $obj["ItemAttributes"]["ListPrice"]["Amount"];
+	if ($obj["ItemAttributes"]["ListPrice"]["CurrencyCode"] == "USD" ) {
+		$item["currency"] = "$";
+	}
+	$item["title"] = $obj["ItemAttributes"]["Title"];
+	$item["clean_url"] = $obj["DetailPageURL"];
+
+	return $item;
 }
 
 function slack_notify($data) {
