@@ -324,16 +324,16 @@ function fetchItem($asin, $country) {
 	$formattedResponse = $apaiIO->runOperation($lookup);
 	$item = array();
 	$obj = $formattedResponse["Items"]["Item"];
-	//print_r($obj);
-	echo "\n";
+
 	$item["photo"] = $obj["MediumImage"]["URL"];
 	$item["price"] = $obj["ItemAttributes"]["ListPrice"]["Amount"];
 	if ($obj["ItemAttributes"]["ListPrice"]["CurrencyCode"] == "USD" ) {
 		$item["currency"] = "$";
 	}
 	$item["title"] = $obj["ItemAttributes"]["Title"];
-	print_r($item);
-	exit;
+	$item["clean_url"] = $obj["DetailPageURL"];
+
+	return $item;
 }
 
 function slack_notify($data) {

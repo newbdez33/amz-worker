@@ -47,5 +47,6 @@ if ($obj["ItemAttributes"]["ListPrice"]["CurrencyCode"] == "USD" ) {
 	$item["currency"] = "$";
 }
 $item["title"] = $obj["ItemAttributes"]["Title"];
+$item["clean_url"] = $obj["DetailPageURL"];
 print_r($item);
 echo "\n";
