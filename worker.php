@@ -72,9 +72,18 @@ function mainLoop() {
 			slack_notify("Worker:".$json);
 		}else {
 			$url = $data['url'];
-			echo "Get:".$url."\n";
+			$asin = $data['asin'];
+			$aac = $data["aac"];
+			echo "Get:".$asin."\n";
 			$log->debug("Get:".$url);
-			$fetched = fetchAmazonUrl($url);
+
+			$fetched = array();
+			if ( $aac == "com" ) {
+				$fetched = fetchItem($asin, $aac);
+			}else {
+				$fetched = fetchAmazonUrl($url);
+			}
+			
 			print_r($fetched);
 			if (!array_key_exists("title", $fetched)) {
 				echo "fetch price failed. may try it again later.\n";
