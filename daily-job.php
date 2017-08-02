@@ -41,7 +41,7 @@ $products = new ItemIterator($db->getScanIterator(array(
 $msg = "";
 $c = 0;
 foreach ($products as $p) {
-    $data = array("asin" => $p['asin'], "url" => $p["url"]);
+    $data = array("asin" => $p['asin'], "url" => $p["url"], "aac" => $p["aac"]);
 	$r = $q->sendMessage(array(
 	    "QueueUrl" => "https://sqs.ap-northeast-1.amazonaws.com/426901641069/daily_queue",
 	    "MessageBody" => json_encode($data)
