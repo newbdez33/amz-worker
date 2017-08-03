@@ -326,13 +326,12 @@ function fetchItem($asin, $country) {
 	$obj = $formattedResponse["Items"]["Item"];
 
 	$item["photo"] = $obj["MediumImage"]["URL"];
-	$item["price"] = $obj["ItemAttributes"]["ListPrice"]["Amount"];
+	$item["price"] = doubleval($obj["ItemAttributes"]["ListPrice"]["Amount"]);
 	if ($obj["ItemAttributes"]["ListPrice"]["CurrencyCode"] == "USD" ) {
 		$item["currency"] = "$";
 	}
 	$item["title"] = $obj["ItemAttributes"]["Title"];
 	$item["clean_url"] = $obj["DetailPageURL"];
-
 	return $item;
 }
 
