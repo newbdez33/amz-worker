@@ -77,12 +77,7 @@ function mainLoop() {
 			echo "Get:".$asin."\n";
 			$log->debug("Get:".$url);
 
-			$fetched = array();
-			if ( $aac == "com" ) {
-				$fetched = fetchItem($asin, $aac);
-			}else {
-				$fetched = fetchAmazonUrl($url);
-			}
+			$fetched = fetchAmazonUrl($url);
 			
 			print_r($fetched);
 
@@ -94,7 +89,8 @@ function mainLoop() {
 			$updated["highest"] = $fetched["price"];
 			$updated["lowest"] = $fetched["price"];
 			if ( $aac == "com" ) {
-				$updated['clean_url'] = $fetched["clean_url"];
+				$origin = fetchItem($asin, $aac);
+				$updated['clean_url'] = $origin["clean_url"];
 			}else {
 				$updated['clean_url'] = getCleanUrl($url);
 			}

@@ -72,12 +72,7 @@ function mainLoop() {
 
             $log->debug("Get:".$url);
 
-            $item = array();
-            if ( $aac == "com" ) {
-                $item = fetchItem($asin, $aac);
-            }else {
-                $item = fetchAmazonUrl($url);
-            }
+            $item = fetchAmazonUrl($url);
             
             //print_r($item);
             $price["t"] = time();
