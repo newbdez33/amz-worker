@@ -83,6 +83,7 @@ function mainLoop() {
 
 			if (!array_key_exists("title", $fetched)) {
 				echo "fetch price failed. may try it again later.\n";
+				$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 				return;
 			}
 			$updated = array_merge($fetched, $data);
