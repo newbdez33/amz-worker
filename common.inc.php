@@ -273,7 +273,7 @@ function fetchAmazonUrl($url) {
 
 	if ($data["price"] == '0') {
 		try {
-			$element = $webDriver->findElement(WebDriverBy::id("tmmSwatches"));
+			$element = $webDriver->findElement(WebDriverBy::className("swatchElement selected"));
 			$element = $element->findElement(WebDriverBy::className("a-color-price"));
 			if ($element->isDisplayed()) {
 	    		$price = $element->getText();
