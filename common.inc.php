@@ -360,7 +360,7 @@ function fetchItem($asin, $country) {
 function slack_notify($data) {
     $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/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");
+    curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/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");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"text\":\"{$data}\"}");
     curl_setopt($ch, CURLOPT_POST, 1);
