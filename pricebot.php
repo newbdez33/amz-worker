@@ -34,10 +34,10 @@ $qurl = "https://sqs.ap-northeast-1.amazonaws.com/426901641069/daily_queue";
 echo "started.\n";
 
 register_shutdown_function(function () {
-    global $_, $argv; 
+    global $_, $argv;
     // restart myself
     slack_notify("Bot: Check me if you can, I maybe exited.");
-    pcntl_exec("/usr/bin/php /home/newbdez33/production/www/bot/pricebot.php");
+    pcntl_exec("/usr/bin/php /var/www/bot/pricebot.php");
 });
 
 while ( true ) {
@@ -73,7 +73,7 @@ function mainLoop() {
             $log->debug("Get:".$url);
 
             $item = fetchAmazonUrl($url, false);
-            
+
             //print_r($item);
             $price["t"] = time();
             $price["asin"] = $data["asin"];

@@ -17,7 +17,7 @@ function getCleanUrl($url) {
 
 function putPrice($price) {
 	global $db;
-	
+
 	$marshaler = new Marshaler();
 	$p_data = $marshaler->marshalItem($price);
 	$result = $db->putItem(array(
@@ -80,7 +80,7 @@ function updatePrices($pid, $current) {
 	    'Key' => [
 	    	'asin' => [
 	    		'S' => $pid
-	    	] 
+	    	]
 	    ],
 	    'ExpressionAttributeNames' => [
 	        '#L' => 'lowest',
@@ -95,7 +95,7 @@ function updatePrices($pid, $current) {
 	        ':u' => ['N' => time()]
 	    ] ,
 	    'UpdateExpression' => 'set #L = :l, #H = :h, #C = :c, #U = :u',
-	    'ReturnValues' => 'ALL_NEW' 
+	    'ReturnValues' => 'ALL_NEW'
     ]);
 
 }
@@ -137,7 +137,7 @@ function fetchAmazonUrl($url, $shouldQuite = true) {
 
 	try {
 		echo "fetching...";
-		
+
 		$webDriver->get($url);
 		$element = $webDriver->findElement(WebDriverBy::id("productTitle"));
 		$data["title"] = $element->getText();
@@ -319,9 +319,15 @@ function fetchAmazonUrl($url, $shouldQuite = true) {
 	echo "close window\n";
 	$webDriver->close();
 //	if ( $shouldQuite ) {
+	try {
 		$webDriver->quit();
+	} catch (Exception $e) {
+		//
+	}finally {
+		
+	}
 //	}
-	
+
 	//$log->debug("fetched price:".print_r($data, true));
 	return $data;
 }
