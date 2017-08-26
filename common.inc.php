@@ -318,9 +318,9 @@ function fetchAmazonUrl($url, $shouldQuite = true) {
 
 	echo "close window\n";
 	$webDriver->close();
-	if ( $shouldQuite ) {
+//	if ( $shouldQuite ) {
 		$webDriver->quit();
-	}
+//	}
 	
 	//$log->debug("fetched price:".print_r($data, true));
 	return $data;
