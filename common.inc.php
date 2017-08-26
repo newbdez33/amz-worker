@@ -124,7 +124,7 @@ function convertPrice($price, $url) {
 	return $data;
 }
 
-function fetchAmazonUrl($url) {
+function fetchAmazonUrl($url, $shouldQuite = true) {
 	global $log;
 
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
@@ -318,7 +318,9 @@ function fetchAmazonUrl($url) {
 
 	echo "close window\n";
 	$webDriver->close();
-	$webDriver->quit();
+	if ( $shouldQuite ) {
+		$webDriver->quit();
+	}
 	
 	//$log->debug("fetched price:".print_r($data, true));
 	return $data;

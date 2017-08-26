@@ -72,7 +72,7 @@ function mainLoop() {
 
             $log->debug("Get:".$url);
 
-            $item = fetchAmazonUrl($url);
+            $item = fetchAmazonUrl($url, false);
             
             //print_r($item);
             $price["t"] = time();
