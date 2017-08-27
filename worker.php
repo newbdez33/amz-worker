@@ -13,7 +13,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 register_shutdown_function(function () {
-    global $_, $argv; 
+    global $_, $argv;
     // restart myself
     slack_notify("Worker: Check me if you can, I maybe quited.");
     pcntl_exec("/usr/bin/php /var/www/bot/worker.php", $argv);
@@ -78,7 +78,7 @@ function mainLoop() {
 			$log->debug("Get:".$url);
 
 			$fetched = fetchAmazonUrl($url);
-			
+
 			print_r($fetched);
 
 			if (!array_key_exists("title", $fetched)) {
@@ -95,10 +95,10 @@ function mainLoop() {
 			}else {
 				$updated['clean_url'] = getCleanUrl($url);
 			}
-			
+
 			putItem($updated);
 
-			
+
 			$price["t"] = time();
 		    $price["asin"] = $updated["asin"];
 		    $price["price"] = doubleval($updated["price"]);
@@ -118,7 +118,7 @@ function mainLoop() {
             	slack_notify("Invalied price:". print_r($price, true));
                 $log->debug("Invalied price:". print_r($price, true));
             }
-			
+
 		}
 		$q->deleteMessage(array("QueueUrl" => $qurl, "ReceiptHandle" => $receipt));
 	}else {
@@ -147,5 +147,3 @@ function putItem($item) {
 	//$log->debug("put item");
     return $result;
 }
-
-
