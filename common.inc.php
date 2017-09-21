@@ -124,11 +124,11 @@ function convertPrice($price, $url) {
 	return $data;
 }
 
-function fetchAmazonUrl($url, $shouldQuite = true) {
+function fetchAmazonUrl($url) {
 	global $log;
 
 	$capabilities = array(WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities, 90*1000, 90*1000);
+	$webDriver = RemoteWebDriver::create('http://selenium:4444/wd/hub', $capabilities, 120*1000, 120*1000);
 
 	$data = array();
 	//default price
@@ -317,16 +317,7 @@ function fetchAmazonUrl($url, $shouldQuite = true) {
 
 
 	echo "close window\n";
-	$webDriver->close();
-//	if ( $shouldQuite ) {
-	try {
-		$webDriver->quit();
-	} catch (Exception $e) {
-		//
-	}finally {
-		
-	}
-//	}
+	$webDriver->quit();
 
 	//$log->debug("fetched price:".print_r($data, true));
 	return $data;
