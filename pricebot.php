@@ -13,7 +13,7 @@ use Monolog\Handler\StreamHandler;
 //本job实现将所有的
 
 $log = new Logger('info');
-$log->pushHandler(new StreamHandler($dir.'./logs/pricebot.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler($dir.'/logs/pricebot.log', Logger::DEBUG));
 
 $q = SqsClient::factory(array(
     'credentials' => array(
