@@ -1,8 +1,9 @@
 <?php
-require_once('vendor/autoload.php');
-require "../pr/aws.inc.php";
-require "./common.inc.php";
-require "./mail.php";
+$dir = dirname(__FILE__); 
+require_once($dir.'/vendor/autoload.php');
+require $dir."/../pr/aws.inc.php";
+require $dir."/common.inc.php";
+require $dir."/mail.php";
 use Aws\Sqs\SqsClient;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
@@ -12,7 +13,7 @@ use Monolog\Handler\StreamHandler;
 //本job实现将所有的
 
 $log = new Logger('info');
-$log->pushHandler(new StreamHandler('./logs/pricebot.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler($dir.'./logs/pricebot.log', Logger::DEBUG));
 
 $q = SqsClient::factory(array(
     'credentials' => array(
