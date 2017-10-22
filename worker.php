@@ -89,7 +89,7 @@ function mainLoop() {
 			$updated = array_merge($fetched, $data);
 			$updated["highest"] = $fetched["price"];
 			$updated["lowest"] = $fetched["price"];
-			if ( $aac == "com" ) {
+			if ( $aac == "com" && false  ) {
 				$origin = fetchItem($asin, $aac);
 				$updated['clean_url'] = $origin["clean_url"];
 			}else {
